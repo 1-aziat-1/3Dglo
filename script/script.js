@@ -62,44 +62,37 @@ window.addEventListener('DOMContentLoaded', function(){
     countTimer('24 november 2021');
     
     const toggleMenu = () => {
-        const btnMenu = document.querySelector('.menu'),
-              menu = document.querySelector('menu');
+        const  menu = document.querySelector('menu');
 
               
         const handlerMenu = () => {
             menu.classList.toggle('active-menu');
         };
 
-        // document.addEventListener('click',(event)=>{
-        //     let target = event.target;
-        //     if(target.closest('.menu')){
-        //         handlerMenu();
-        //     }else if(target.closest('menu')){
-        //         if(target.matches('a')){
-        //                     event.preventDefault();
-        //                     handlerMenu();
-        //                     if(target.closest('ul')){
-        //                         flyAnimate(target);
-        //                     }
-                            
-        //         }
-        //     }
-        // })
-        
-        btnMenu.addEventListener('click',handlerMenu);       
-        
-        menu.addEventListener('click', (event)=>{
+
+        document.addEventListener('click',(event)=>{
             let target = event.target;
-            if(target.matches('a')){
-                event.preventDefault();
-                handlerMenu();
-                if(target.closest('ul')){
-                    flyAnimate(target);
+
+            if(target.closest('.menu, menu')){
+                if(!menu.classList.contains('active-menu')){
+                    handlerMenu();
                 }
+                if(target.matches('a')){
+                    event.preventDefault();
+                    handlerMenu();
+                    if(target.closest('ul')){
+                        flyAnimate(target);
+                    } 
+                }     
             }else{
-                console.log(1);
+                if(menu.classList.contains('active-menu')){
+                    menu.classList.remove('active-menu');
+                }
+                return;
             }
-        })
+            
+        });
+        
         
     };
 
@@ -359,7 +352,7 @@ window.addEventListener('DOMContentLoaded', function(){
     //connect
 
     const connect = () => {
-        const connectContainer = document.querySelector('.connect');
+        const connectContainer = document.querySelector('#form2');
 
         connectContainer.addEventListener('click',(event)=>{
             let target = event.target;
@@ -369,7 +362,7 @@ window.addEventListener('DOMContentLoaded', function(){
 
             if(target.matches('#form2-name, #form2-message')){
                 target.addEventListener('input',()=>{
-                    target.value = target.value.replace(/[^А-Яа-яЁё-\s]/g, '');
+                    target.value = target.value.replace(/[^а-я\ -]/gi, '');
                 });
             }
 
@@ -388,10 +381,13 @@ window.addEventListener('DOMContentLoaded', function(){
             if(target.matches('input')){
                 //target.value = target.value.replace()
                 target.addEventListener('blur',()=>{
-                    if(target.matches('#form2-name')){
-                        target.value = target.value[0].toUpperCase() + target.value.slice(1).toLowerCase();
+                    if(target.matches('#form2-name,#form2-message')){
+                        target.value = target.value.toLowerCase().replace(/([-\ ]|^)([а-яё])/g, (str) => {
+                            return str.toUpperCase();
+                        });
                     }
-                })
+                    target.value = target.value.replace(/^-+|-+$/g, '').replace(/([\s-])+/g, (str,val1)=>{return val1});
+                });
             }
         });
     };
